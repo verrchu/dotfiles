@@ -43,6 +43,7 @@ let g:lightline = {
 
 let g:ranger_replace_netrw = 1
 
+let g:lsp_hover_ui = 'preview'
 let g:lsp_diagnostics_float_cursor = 1
 let g:lsp_document_code_action_signs_enabled = 0
 
@@ -94,11 +95,9 @@ set updatetime=100
 set laststatus=2 " make lightline visible
 
 set hidden
-nnoremap <C-N> :bnext<CR>
-nnoremap <C-P> :bprev<CR>
 nnoremap <C-D> :bdelete<CR>
 
-nnoremap <C-F> :Files<CR>
+nnoremap <C-P> :Files<CR>
 
 set colorcolumn=80
 set cursorline
