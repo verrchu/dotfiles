@@ -35,8 +35,9 @@ require("trouble").setup {
     multiline = false,
     fold_open = "v",
     fold_closed = ">",
-    signs = { error = "E", warning = "W", hint = "H", information = "I" },
-    use_diagnostic_signs = false
+    signs = { error = "E", warning = "W", hint = "H", information = "I", other = "+" },
+    use_diagnostic_signs = false,
+    auto_fold = true,
 }
 
 require('lualine').setup {
@@ -100,9 +101,10 @@ vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('UserLspConfig', {}),
   callback = function(ev)
     local opts = { buffer = ev.buf }
-    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+    -- use "trouble" plugin for typical lsp stuff
+    -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+    -- vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+    -- vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
     vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
     vim.keymap.set('n', '<space>f', function()
       vim.lsp.buf.format { async = true }
@@ -183,6 +185,9 @@ vim.api.nvim_set_keymap(
   'n', '<leader>dd', ':TroubleToggle document_diagnostics<CR>',
   {noremap = true, silent = true}
 )
+vim.keymap.set("n", "gr", function() require("trouble").toggle("lsp_references") end)
+vim.keymap.set("n", "gi", function() require("trouble").toggle("lsp_implementations") end)
+vim.keymap.set("n", "gd", function() require("trouble").toggle("lsp_definitions") end)
 
 -- make escape act in terminal mode the same as in insert mode
 vim.api.nvim_set_keymap('t', '<Esc>', '<C-\\><C-n>', {noremap = true})
