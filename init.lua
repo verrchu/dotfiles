@@ -4,6 +4,8 @@ require('packer').startup(function()
   use 'ap/vim-buftabline'
   use 'nvim-lualine/lualine.nvim'
 
+  use 'folke/trouble.nvim'
+
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
 
   use 'rbgrouleff/bclose.vim' -- needed by ranger plugin
@@ -26,6 +28,16 @@ require('packer').startup(function()
 end)
 
 vim.cmd [[colorscheme spartan]]
+
+require("trouble").setup {
+    icons = false,
+    cycle_results = false,
+    multiline = false,
+    fold_open = "v",
+    fold_closed = ">",
+    signs = { error = "E", warning = "W", hint = "H", information = "I" },
+    use_diagnostic_signs = false
+}
 
 require('lualine').setup {
   options = {
@@ -73,7 +85,6 @@ vim.g.ranger_replace_netrw = 1
 vim.fn.setenv("FZF_DEFAULT_COMMAND", "rg --files --hidden --follow --glob '!.git/*'")
 
 local lspconfig = require('lspconfig')
-
 lspconfig.rust_analyzer.setup {
     settings = {
         ["rust-analyzer"] = {
@@ -84,6 +95,7 @@ lspconfig.rust_analyzer.setup {
     },
 }
 
+-- common lsp key mappings
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('UserLspConfig', {}),
   callback = function(ev)
@@ -98,29 +110,31 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
+-- quickfix window mappings
 vim.api.nvim_create_augroup("QuickFixMappings", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
     group = "QuickFixMappings",
     pattern = "qf",
     callback = function()
-        vim.api.nvim_buf_set_keymap(0, 'n', '<CR>', ':.cc<CR>', {noremap = true, silent = true})
+        -- open a buffer by clicking `enter` on it
+        vim.api.nvim_buf_set_keymap(
+            0, 'n', '<CR>', ':.cc<CR>', {noremap = true, silent = true}
+        )
     end,
 })
 
--- vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
--- vim.opt.foldtext = "v:lua.vim.treesitter.foldtext()"
-
-vim.wo.foldmethod = 'expr'
-vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
-vim.opt.foldlevelstart = 99
+-- folding config
+vim.opt.foldmethod = 'expr'
+vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
+vim.opt.foldlevelstart = 99 -- open all folds by default
 
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = { "rust" },
+  ensure_installed = { "rust", "python", "lua", "elixir" },
 
   auto_install = true,
   sync_install = false,
 
-  highlight = { enable = false },
+  highlight = { enable = false } -- treesitter is used for folding only
 }
 
 vim.o.errorbells = false -- Disable error bells
@@ -128,7 +142,7 @@ vim.o.visualbell = false -- Disable visual bells
 vim.o.belloff = "all" -- Turn off all bells
 
 vim.o.number = true
-vim.o.showmode = false
+vim.o.showmode = false -- do not show mode as it is shown by status line
 vim.o.wrap = false
 
 -- tab-space behaviour
@@ -137,22 +151,38 @@ vim.o.shiftwidth = 4
 vim.o.softtabstop = 4
 vim.o.expandtab = true
 
+-- disable backups
 vim.o.backup = false
 vim.o.writebackup = false
 vim.o.swapfile = false
 
+-- disable arrow keys (just like that)
 vim.api.nvim_set_keymap('n', '<Up>', '<Nop>', {noremap = true})
 vim.api.nvim_set_keymap('n', '<Down>', '<Nop>', {noremap = true})
 vim.api.nvim_set_keymap('n', '<Left>', '<Nop>', {noremap = true})
 vim.api.nvim_set_keymap('n', '<Right>', '<Nop>', {noremap = true})
 
+-- vim-like movement between splits
 vim.api.nvim_set_keymap('n', '<C-j>', '<C-W>j', {noremap = false})
 vim.api.nvim_set_keymap('n', '<C-k>', '<C-W>k', {noremap = false})
 vim.api.nvim_set_keymap('n', '<C-h>', '<C-W>h', {noremap = false})
 vim.api.nvim_set_keymap('n', '<C-l>', '<C-W>l', {noremap = false})
 
+-- close current buffer (tab)
 vim.api.nvim_set_keymap('n', '<C-D>', ':bdelete<CR>', {noremap = true, silent = true})
+-- open fzf file search
 vim.api.nvim_set_keymap('n', '<C-P>', ':Files<CR>', {noremap = true, silent = true})
+-- "reset" hlsearch results highlighting
 vim.api.nvim_set_keymap('n', '<C-M>', ':nohlsearch<CR>', {noremap = true, silent = true})
 
+vim.api.nvim_set_keymap(
+  'n', '<leader>dw', ':TroubleToggle workspace_diagnostics<CR>',
+  {noremap = true, silent = true}
+)
+vim.api.nvim_set_keymap(
+  'n', '<leader>dd', ':TroubleToggle document_diagnostics<CR>',
+  {noremap = true, silent = true}
+)
+
+-- make escape act in terminal mode the same as in insert mode
 vim.api.nvim_set_keymap('t', '<Esc>', '<C-\\><C-n>', {noremap = true})
