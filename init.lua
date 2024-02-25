@@ -4,6 +4,7 @@ require('packer').startup(function()
   use 'ap/vim-buftabline'
   use 'nvim-lualine/lualine.nvim'
 
+  -- cool diagnostic tab which is also used for lsp items)
   use 'folke/trouble.nvim'
 
   -- I don't know yet if I need these
@@ -22,7 +23,7 @@ require('packer').startup(function()
   use 'junegunn/fzf.vim'
 
   use 'tpope/vim-abolish' -- smart rename
-  use 'tpope/vim-commentary'
+  use 'tpope/vim-commentary' -- comments 
   use 'tpope/vim-unimpaired' -- smart left-right movement
 
   use 'kana/vim-textobj-entire'
@@ -42,7 +43,7 @@ cmp.setup({
     ["<C-p>"] = cmp.mapping.select_prev_item(),
     ["<C-n>"] = cmp.mapping.select_next_item(),
     ['<C-e>'] = cmp.mapping.abort(),
-    ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
   }),
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
@@ -58,7 +59,6 @@ cmp.setup({
     },
   },
 })
-
 
 require("trouble").setup {
     icons = false,
