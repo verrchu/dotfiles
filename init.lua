@@ -46,7 +46,17 @@ cmp.setup({
   }),
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
-  })
+  }),
+  sorting = {
+    comparators = {
+      -- sort completion items alphabetically
+      function(entry1, entry2)
+         local label1 = entry1:get_completion_item().label
+         local label2 = entry2:get_completion_item().label
+         return label1 < label2
+       end,
+    },
+  },
 })
 
 
