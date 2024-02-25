@@ -2,7 +2,12 @@ require('packer').startup(function()
   use 'wbthomason/packer.nvim'
 
   use 'ap/vim-buftabline'
-  use 'itchyny/lightline.vim'
+
+  use {
+    'nvim-lualine/lualine.nvim', requires = {
+      'nvim-tree/nvim-web-devicons', opt = true
+    }
+  }
 
   use 'rbgrouleff/bclose.vim' -- needed by ranger plugin
   use 'francoiscabrol/ranger.vim'
@@ -25,24 +30,45 @@ end)
 
 vim.cmd [[colorscheme spartan]]
 
-vim.g.lightline = {
-  colorscheme = 'seoul256',
-  active = {
-    left = {{'mode'}, {'filename'}},
-    right = {{'lineinfo'}, {'percent'}, {'filetype'}}
+require('lualine').setup {
+  options = {
+    icons_enabled = false,
+    theme = 'auto',
+    component_separators = {},
+    section_separators = {},
+    disabled_filetypes = {
+      statusline = {},
+      winbar = {},
+    },
+    ignore_focus = {},
+    always_divide_middle = true,
+    globalstatus = false,
+    refresh = {
+      statusline = 1000,
+      tabline = 1000,
+      winbar = 1000,
+    }
   },
-  inactive = {
-    left = {{'filename'}},
-    right = {{}}
+  sections = {
+    lualine_a = {'mode'},
+    lualine_b = {'branch', 'diff', 'diagnostics'},
+    lualine_c = {'filename'},
+    lualine_x = {'filetype'},
+    lualine_y = {'progress'},
+    lualine_z = {'location'}
   },
-  tabline = {
-    left = {{'tabs'}},
-    right = {{}}
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = {'filename'},
+    lualine_x = {},
+    lualine_y = {},
+    lualine_z = {}
   },
-  tab = {
-    active = {'filename', 'modified'},
-    inactive = {'filename', 'modified'}
-  }
+  tabline = {},
+  winbar = {},
+  inactive_winbar = {},
+  extensions = {}
 }
 
 vim.g.ranger_replace_netrw = 1
