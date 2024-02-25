@@ -6,6 +6,13 @@ require('packer').startup(function()
 
   use 'folke/trouble.nvim'
 
+  -- I don't know yet if I need these
+  -- use 'hrsh7th/cmp-buffer'
+  -- use 'hrsh7th/cmp-path'
+  -- use 'hrsh7th/cmp-cmdline'
+  use 'hrsh7th/cmp-nvim-lsp'
+  use 'hrsh7th/nvim-cmp'
+
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
 
   use 'rbgrouleff/bclose.vim' -- needed by ranger plugin
@@ -28,6 +35,20 @@ require('packer').startup(function()
 end)
 
 vim.cmd [[colorscheme spartan]]
+
+local cmp = require('cmp')
+cmp.setup({
+  mapping = cmp.mapping.preset.insert({
+    ["<C-p>"] = cmp.mapping.select_prev_item(),
+    ["<C-n>"] = cmp.mapping.select_next_item(),
+    ['<C-e>'] = cmp.mapping.abort(),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+  }),
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp' },
+  })
+})
+
 
 require("trouble").setup {
     icons = false,
