@@ -2,12 +2,7 @@ require('packer').startup(function()
   use 'wbthomason/packer.nvim'
 
   use 'ap/vim-buftabline'
-
-  use {
-    'nvim-lualine/lualine.nvim', requires = {
-      'nvim-tree/nvim-web-devicons', opt = true
-    }
-  }
+  use 'nvim-lualine/lualine.nvim'
 
   use 'rbgrouleff/bclose.vim' -- needed by ranger plugin
   use 'francoiscabrol/ranger.vim'
