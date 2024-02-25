@@ -4,6 +4,8 @@ require('packer').startup(function()
   use 'ap/vim-buftabline'
   use 'nvim-lualine/lualine.nvim'
 
+  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
+
   use 'rbgrouleff/bclose.vim' -- needed by ranger plugin
   use 'francoiscabrol/ranger.vim'
 
@@ -104,6 +106,22 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.api.nvim_buf_set_keymap(0, 'n', '<CR>', ':.cc<CR>', {noremap = true, silent = true})
     end,
 })
+
+-- vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+-- vim.opt.foldtext = "v:lua.vim.treesitter.foldtext()"
+
+vim.wo.foldmethod = 'expr'
+vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
+vim.opt.foldlevelstart = 99
+
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = { "rust" },
+
+  auto_install = true,
+  sync_install = false,
+
+  highlight = { enable = false },
+}
 
 vim.o.errorbells = false -- Disable error bells
 vim.o.visualbell = false -- Disable visual bells
