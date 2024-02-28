@@ -32,6 +32,9 @@ require('packer').startup(function()
   use 'kana/vim-textobj-indent'
   use 'kana/vim-textobj-user'
 
+  use 'williamboman/mason.nvim'
+  use 'williamboman/mason-lspconfig.nvim'
+
   use 'neovim/nvim-lspconfig'
 
   use 'JarrodCTaylor/spartan' -- colorscheme
@@ -132,7 +135,14 @@ vim.g.ranger_replace_netrw = 1
 
 vim.fn.setenv("FZF_DEFAULT_COMMAND", "rg --files --hidden --follow --glob '!.git/*'")
 
+require("mason").setup()
+require("mason-lspconfig").setup {
+    ensure_installed = { "gopls", "lua_ls" },
+}
+
 local lspconfig = require('lspconfig')
+lspconfig.gopls.setup {}
+lspconfig.lua_ls.setup {}
 lspconfig.rust_analyzer.setup {
     settings = {
         ["rust-analyzer"] = {
@@ -178,7 +188,7 @@ vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
 vim.opt.foldlevelstart = 99 -- open all folds by default
 
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = { "rust", "python", "lua", "elixir" },
+  ensure_installed = { "rust", "python", "lua", "elixir", "go" },
 
   auto_install = true,
   sync_install = false,
