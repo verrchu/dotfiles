@@ -38,10 +38,10 @@ require('packer').startup(function()
 
   use 'neovim/nvim-lspconfig'
 
-  use 'JarrodCTaylor/spartan' -- colorscheme
+  use 'p00f/alabaster.nvim'
 end)
 
-vim.cmd [[colorscheme spartan]]
+vim.cmd [[colorscheme alabaster]]
 
 require('gitsigns').setup {
   on_attach = function(bufnr)
@@ -81,7 +81,6 @@ cmp.setup({
 })
 
 require("trouble").setup {
-    icons = false,
     cycle_results = false,
     multiline = false,
     fold_open = "v",
@@ -137,13 +136,10 @@ vim.g.ranger_replace_netrw = 1
 vim.fn.setenv("FZF_DEFAULT_COMMAND", "rg --files --hidden --follow --glob '!.git/*'")
 
 require("mason").setup()
-require("mason-lspconfig").setup {
-    ensure_installed = { "gopls", "lua_ls" },
-}
+require("mason-lspconfig").setup()
 
 local lspconfig = require('lspconfig')
-lspconfig.gopls.setup {}
-lspconfig.lua_ls.setup {}
+lspconfig.pyright.setup {}
 lspconfig.rust_analyzer.setup {
     settings = {
         ["rust-analyzer"] = {
@@ -164,6 +160,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     -- vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
     -- vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
     vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+    vim.keymap.set('n', '<leader>r', vim.lsp.buf.rename, opts)
     vim.keymap.set('n', '<space>f', function()
       vim.lsp.buf.format { async = true }
     end, opts)
@@ -189,7 +186,7 @@ vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
 vim.opt.foldlevelstart = 99 -- open all folds by default
 
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = { "rust", "python", "lua", "elixir", "go" },
+  ensure_installed = {},
 
   auto_install = true,
   sync_install = false,
@@ -236,11 +233,7 @@ vim.api.nvim_set_keymap('n', '<C-P>', ':Files<CR>', {noremap = true, silent = tr
 vim.api.nvim_set_keymap('n', '<C-M>', ':nohlsearch<CR>', {noremap = true, silent = true})
 
 vim.api.nvim_set_keymap(
-  'n', '<leader>dw', ':TroubleToggle workspace_diagnostics<CR>',
-  {noremap = true, silent = true}
-)
-vim.api.nvim_set_keymap(
-  'n', '<leader>dd', ':TroubleToggle document_diagnostics<CR>',
+  'n', '<leader>dd', ':Trouble diagnostics toggle focus=false filter.buf=0<CR>',
   {noremap = true, silent = true}
 )
 vim.keymap.set("n", "gr", function() require("trouble").toggle("lsp_references") end)
